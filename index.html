@@ -145,6 +145,9 @@
         flex: 1;
         margin-top: 20px;
     }
+    input:invalid, select:invalid, textarea:invalid {
+        border-color: red;
+    }
 </style>
 </head>
 <body>
@@ -227,22 +230,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const submitButton = document.querySelector('button[type="submit"]');
 
-    function checkFormValidity() {
-        const form = document.getElementById('stickyNoteForm');
-        submitButton.disabled = !form.checkValidity();
-    }
-
-    const formFields = document.querySelectorAll('#stickyNoteForm input, #stickyNoteForm textarea, #stickyNoteForm select');
-    formFields.forEach(field => {
-        field.addEventListener('input', checkFormValidity);
-    });
-
-    checkFormValidity();
-
     document.getElementById('stickyNoteForm').addEventListener('submit', function(e) {
         e.preventDefault();
-
-        if (!confirm('Are you sure you want to print the sticky note?')) {
+        
+        const form = document.getElementById('stickyNoteForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
             return;
         }
 
@@ -317,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
         printWindow.document.write('<style>@page { size: 80mm 297mm; margin: 0; } body { margin: 3mm; }</style>');
         printWindow.document.write('</head><body>');
         printWindow.document.write(printContent);
+        printWindow.document.write('</body></html>');
         printWindow.document.close();
         printWindow.print();
 
