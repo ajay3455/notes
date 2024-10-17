@@ -1,388 +1,434 @@
-<html><head><base href="https://gloucester-yonge.com/sticky-notes/">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Gloucester on Yonge - Sticky Notes</title>
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #333;
-        background-color: #fafafa;
-        margin: 0;
-        padding: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
-    .container {
-        background-color: white;
-        border: 2px solid #2196F3;
-        border-radius: 8px;
-        padding: 15px;
-        width: 100%;
-        max-width: 600px;
-        box-sizing: border-box;
-        margin: 10px;
-    }
-    h1 {
-        color: #0d47a1;
-        text-align: center;
-        margin-bottom: 15px;
-        font-size: 1.5em;
-        font-weight: bold;
-    }
-    h2 {
-        color: #1565c0;
-        text-align: center;
-        font-size: 1.2em;
-        margin-bottom: 15px;
-        font-weight: bold;
-    }
-    label {
-        display: block;
-        margin-top: 10px;
-        color: #1e88e5;
-        font-weight: bold;
-        font-size: 1em;
-    }
-    input, textarea, select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #90caf9;
-        border-radius: 4px;
-        box-sizing: border-box;
-        font-size: 1em;
-        font-weight: bold;
-    }
-    textarea {
-        height: 80px;
-        resize: vertical;
-    }
-    button {
-        color: white;
-        padding: 12px 15px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        width: 100%;
-        margin-top: 20px;
-        font-size: 1em;
-        font-weight: bold;
-    }
-    #printStickyNoteButton {
-        background-color: #4CAF50; /* Green */
-    }
-    #printStickyNoteButton:hover {
-        background-color: #45a049; /* Darker Green on hover */
-    }
-    #clearFormButton {
-        background-color: #f44336; /* Red */
-    }
-    #clearFormButton:hover {
-        background-color: #d32f2f; /* Darker Red on hover */
-    }
-    .select-wrapper {
-        position: relative;
-    }
-    .select-wrapper::after {
-        content: '▼';
-        font-size: 16px;
-        top: 12px;
-        right: 10px;
-        position: absolute;
-        pointer-events: none;
-    }
-    select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        padding-right: 30px;
-    }
-    .checkbox-group {
-        margin-top: 10px;
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .checkbox-group label {
-        flex: 1 1 45%;
-        display: flex;
-        align-items: center;
-        margin-bottom: 5px;
-    }
-    .checkbox-group input[type="checkbox"] {
-        margin-right: 5px;
-        width: auto;
-    }
-    .all-guards-checkbox {
-        grid-column: 1 / -1;
-        margin-bottom: 5px;
-    }
-    #otherFromGuardInput, #otherToGuardInput {
-        display: none;
-        margin-top: 5px;
-    }
-    @media print {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Gloucester on Yonge - Sticky Notes</title>
+    <style>
+        /* General Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         body {
-            background-color: white;
-            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #e0f2f1); /* Light blue-green gradient */
+            color: #333;
             margin: 0;
-        }
-        .container {
-            border: none;
-            padding: 0;
-            max-width: 100%;
-        }
-        button, h1, h2 {
-            display: none;
-        }
-    }
-    .button-group {
-        display: flex;
-        gap: 10px;
-    }
-    .button-group button {
-        flex: 1;
-        margin-top: 20px;
-    }
-    input:invalid, select:invalid, textarea:invalid {
-        border-color: red;
-    }
-    @media (max-width: 600px) {
-        .container {
             padding: 10px;
-            margin: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
+
         h1 {
-            font-size: 1.2em;
+            text-align: center;
+            color: #006064; /* Dark teal */
+            margin-bottom: 20px;
         }
-        h2 {
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .form-container, .sample-container, .note-container {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            width: 32%;
+            margin: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .form-container {
+            order: 1;
+        }
+
+        .sample-container {
+            order: 2;
+        }
+
+        .note-container {
+            order: 3;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
             font-size: 1em;
+            color: #555;
         }
-        label,
-        input,
-        textarea,
-        select,
+
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 2px solid #4dd0e1; /* Light blue */
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
         button {
-            font-size: 0.9em;
+            background-color: #00838f; /* Teal */
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-size: 18px;
         }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .checkbox-group {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
         .checkbox-group label {
-            flex: 1 1 100%;
+            flex: 1 1 45%;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
         }
-    }
-</style>
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 5px;
+            width: auto;
+        }
+
+        .all-guards-checkbox {
+            grid-column: 1 / -1;
+            margin-bottom: 5px;
+        }
+
+        #otherFromGuardInput, #otherToGuardInput {
+            display: none;
+            margin-top: 5px;
+        }
+
+        .gloucester-logo img {
+            display: block;
+            margin: 0 auto 10px auto;
+            width: 150px;
+            height: auto;
+        }
+
+        .sample, .note {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .note-content, .sample-content {
+            border: 2px solid #000;
+            padding: 15px;
+            margin: 10px auto;
+            text-align: left;
+            width: 100%;
+            max-width: 300px;
+            box-sizing: border-box;
+            page-break-inside: avoid;
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #notePrintArea {
+                display: block !important;
+                visibility: visible;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 80mm;
+                margin: 0;
+                padding: 0;
+            }
+
+            #notePrintArea * {
+                visibility: visible;
+            }
+
+            .action-buttons {
+                display: none;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 800px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .form-container, .sample-container, .note-container {
+                width: 100%;
+                max-width: none;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>The Gloucester on Yonge</h1>
-    <h2>Sticky Notes</h2>
-    <form id="stickyNoteForm">
-
-        <label for="noteTitle">Note Title:</label>
-        <input type="text" id="noteTitle" name="noteTitle" required placeholder="Enter the note title" title="Please enter the title of the note" aria-label="Note Title">
-
-        <label for="noteContent">Note Content:</label>
-        <textarea id="noteContent" name="noteContent" required placeholder="Enter the note content" title="Please enter the content of the note" aria-label="Note Content"></textarea>
-
-        <label for="suiteNumber">Suite Number (optional):</label>
-        <input type="text" id="suiteNumber" name="suiteNumber" placeholder="Enter suite number (if applicable)" title="If applicable, enter the suite number" aria-label="Suite Number">
-
-        <label id="fromGuardLabel" for="fromGuard">From Guard:</label>
-        <div class="select-wrapper" id="fromGuardWrapper">
-            <select id="fromGuard" name="fromGuard" required aria-label="From Guard">
-                <option value="">Select a guard</option>
-                <option value="Ajaypreet">Ajaypreet</option>
-                <option value="Amritpal">Amritpal</option>
-                <option value="Meet">Meet</option>
-                <option value="Jatin">Jatin</option>
-                <option value="Ashwin">Ashwin</option>
-                <option value="Sarabjot">Sarabjot</option>
-                <option value="Jashanpreet">Jashanpreet</option>
-                <option value="Praveen">Praveen</option>
-                <option value="Arnav">Arnav</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-        <input type="text" id="otherFromGuardInput" placeholder="Enter name (management/other department)" title="Please enter the name of the person. This person could be from management or any other department, not necessarily a guard." aria-label="Other From Guard">
-
-        <div id="toGuardsSection" style="display: block;">
-            <label for="toGuards">To Guards:</label>
-            <div class="checkbox-group">
-                <label class="all-guards-checkbox"><input type="checkbox" name="toGuards" value="All Guards"> All Guards</label>
-                <label><input type="checkbox" name="toGuards" value="Ajaypreet"> Ajaypreet</label>
-                <label><input type="checkbox" name="toGuards" value="Amritpal"> Amritpal</label>
-                <label><input type="checkbox" name="toGuards" value="Meet"> Meet</label>
-                <label><input type="checkbox" name="toGuards" value="Jatin"> Jatin</label>
-                <label><input type="checkbox" name="toGuards" value="Ashwin"> Ashwin</label>
-                <label><input type="checkbox" name="toGuards" value="Sarabjot"> Sarabjot</label>
-                <label><input type="checkbox" name="toGuards" value="Jashanpreet"> Jashanpreet</label>
-                <label><input type="checkbox" name="toGuards" value="Praveen"> Praveen</label>
-                <label><input type="checkbox" name="toGuards" value="Arnav"> Arnav</label>
-                <label><input type="checkbox" id="otherToGuard" name="toGuards" value="Other"> Other</label>
+    <h1>The Gloucester on Yonge - Sticky Notes</h1>
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-container">
+            <div class="gloucester-logo">
+                <img src="https://i.imgur.com/LmweghF.png" alt="The Gloucester on Yonge">
             </div>
-            <input type="text" id="otherToGuardInput" placeholder="Enter names (management/other, comma-separated)" title="Please enter the name(s) of the person(s). These people could be from management or any other department, not necessarily guards. Separate multiple names with commas." aria-label="Other To Guards">
+            <form id="stickyNoteForm">
+                <!-- Form fields -->
+                <label for="noteTitle">Note Title:</label>
+                <input type="text" id="noteTitle" name="noteTitle" placeholder="Enter the note title">
+
+                <label for="noteContent">Note Content:</label>
+                <textarea id="noteContent" name="noteContent" placeholder="Enter the note content"></textarea>
+
+                <label for="suiteNumber">Suite Number (optional):</label>
+                <input type="text" id="suiteNumber" name="suiteNumber" placeholder="Enter suite number (if applicable)">
+
+                <label id="fromGuardLabel" for="fromGuard">From Guard:</label>
+                <select id="fromGuard" name="fromGuard">
+                    <option value="">Select a guard</option>
+                    <option value="Ajaypreet">Ajaypreet</option>
+                    <option value="Amritpal">Amritpal</option>
+                    <option value="Meet">Meet</option>
+                    <option value="Jatin">Jatin</option>
+                    <option value="Praveen">Praveen</option>
+                    <option value="Jashanpreet">Jashanpreet</option>
+                    <option value="Arnav">Arnav</option>
+                    <option value="Gurwinder">Gurwinder</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="text" id="otherFromGuardInput" placeholder="Enter name (management/other department)">
+
+                <label for="toGuards">To Guards:</label>
+                <div class="checkbox-group">
+                    <label class="all-guards-checkbox"><input type="checkbox" name="toGuards" value="All Guards"> All Guards</label>
+                    <label><input type="checkbox" name="toGuards" value="Ajaypreet"> Ajaypreet</label>
+                    <label><input type="checkbox" name="toGuards" value="Amritpal"> Amritpal</label>
+                    <label><input type="checkbox" name="toGuards" value="Meet"> Meet</label>
+                    <label><input type="checkbox" name="toGuards" value="Jatin"> Jatin</label>
+                    <label><input type="checkbox" name="toGuards" value="Praveen"> Praveen</label>
+                    <label><input type="checkbox" name="toGuards" value="Jashanpreet"> Jashanpreet</label>
+                    <label><input type="checkbox" name="toGuards" value="Arnav"> Arnav</label>
+                    <label><input type="checkbox" name="toGuards" value="Gurwinder"> Gurwinder</label>
+                    <label><input type="checkbox" id="otherToGuard" name="toGuards" value="Other"> Other</label>
+                </div>
+                <input type="text" id="otherToGuardInput" placeholder="Enter names (comma-separated)">
+
+                <label for="expiryDateTime">Expiry Date and Time (optional):</label>
+                <input type="datetime-local" id="expiryDateTime" name="expiryDateTime">
+
+                <div class="button-group">
+                    <button type="button" id="printNoteButton">Print Sticky Note</button>
+                    <button type="button" id="clearFormButton">Clear Form</button>
+                </div>
+            </form>
         </div>
 
-        <label for="expiryDateTime">Expiry Date and Time (optional):</label>
-        <input type="datetime-local" id="expiryDateTime" name="expiryDateTime" aria-label="Expiry Date and Time">
-
-        <div class="button-group">
-            <button type="submit" id="printStickyNoteButton">Print Sticky Note</button>
-            <button type="button" id="clearFormButton">Clear Form</button>
+        <!-- Sample Preview Section -->
+        <div class="sample-container">
+            <h2>Sample Preview</h2>
+            <div id="samplePreview" class="sample">
+                <!-- Sample content will be inserted here -->
+            </div>
         </div>
-    </form>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    function toggleOtherInput(selectElement, otherInputId) {
-        const otherInput = document.getElementById(otherInputId);
-        otherInput.style.display = selectElement.value === 'Other' ? 'block' : 'none';
-        otherInput.required = selectElement.value === 'Other';
-        if (selectElement.value === 'Other') {
-            otherInput.focus();
-        }
-    }
+        <!-- Note Preview Section -->
+        <div class="note-container">
+            <h2>Note Preview</h2>
+            <div id="notePreview" class="note">
+                <!-- Note content will be inserted here -->
+            </div>
+            <!-- Print button is included in the form -->
+        </div>
+    </div>
 
-    document.getElementById('fromGuard').addEventListener('change', function() {
-        toggleOtherInput(this, 'otherFromGuardInput');
-    });
+    <div id="notePrintArea" style="display: none;"></div>
 
-    const submitButton = document.querySelector('button[type="submit"]');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fromGuardSelect = document.getElementById('fromGuard');
+            const otherFromGuardInput = document.getElementById('otherFromGuardInput');
+            const otherToGuardCheckbox = document.getElementById('otherToGuard');
+            const otherToGuardInput = document.getElementById('otherToGuardInput');
 
-    document.getElementById('stickyNoteForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const form = document.getElementById('stickyNoteForm');
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
-
-        const formatDate = date => {
-            const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-            return `${String(date.getDate()).padStart(2, '0')}-${months[date.getMonth()]}-${date.getFullYear()}`;
-        };
-
-        const formatTime = date => {
-            let hours = date.getHours();
-            let minutes = date.getMinutes();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            minutes = minutes < 10 ? '0'+minutes : minutes;
-            return `${hours}:${minutes} ${ampm}`;
-        };
-
-        const expiryDateTime = document.getElementById('expiryDateTime').value;
-        let expiryText = '';
-        if (expiryDateTime) {
-            const expiryDate = new Date(expiryDateTime);
-            expiryText = `Expiry: ${formatDate(expiryDate)} ${formatTime(expiryDate)}`;
-        }
-
-        const currentDate = new Date();
-        const createdText = `Created: ${formatDate(currentDate)} ${formatTime(currentDate)}`;
-
-        let fromPerson = document.getElementById('fromGuard').value;
-        if (fromPerson === 'Other') {
-            fromPerson = document.getElementById('otherFromGuardInput').value;
-        }
-
-        let toGuardsText = '';
-        let toGuards = Array.from(document.querySelectorAll('input[name="toGuards"]:checked')).map(cb => cb.value);
-        if (toGuards.includes('All Guards')) {
-            toGuardsText = 'All Guards';
-        } else {
-            if (toGuards.includes('Other')) {
-                const otherGuards = document.getElementById('otherToGuardInput').value.split(',').map(g => g.trim());
-                toGuards = toGuards.filter(g => g !== 'Other').concat(otherGuards);
+            function toggleOtherInput(selectElement, otherInput) {
+                otherInput.style.display = selectElement.value === 'Other' ? 'block' : 'none';
             }
-            toGuardsText = toGuards.join(', ');
-        }
 
-        const printContent = `
-        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px; line-height: 1.4; padding: 5px; width: 72mm; border: 2px solid #000; box-sizing: border-box;">
-            <div style="border-bottom: 1px solid #000; padding-bottom: 3px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 11px;">
-                <span>${createdText}</span>
-                ${expiryText ? `<span>${expiryText}</span>` : ''}
-            </div>
-            <div style="border: 1px solid #000; padding: 5px; margin-bottom: 5px;">
-                <p style="font-size: 16px; font-weight: bold; margin: 0 0 5px;">${document.getElementById('noteTitle').value}</p>
-                <p style="margin: 0; white-space: pre-wrap;">${document.getElementById('noteContent').value}</p>
-            </div>
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="border: 1px solid #000; padding: 3px;"><strong>Suite:</strong> ${document.getElementById('suiteNumber').value || 'N/A'}</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 3px;"><strong>From:</strong> ${fromPerson}</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 3px;"><strong>To:</strong> ${toGuardsText}</td>
-                </tr>
-            </table>
-        </div>
-        `;
+            fromGuardSelect.addEventListener('change', function() {
+                toggleOtherInput(this, otherFromGuardInput);
+            });
 
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write('<html><head><title>Print Sticky Note</title>');
-        printWindow.document.write('<style>@page { size: 80mm 297mm; margin: 0; } body { margin: 3mm; }</style>');
-        printWindow.document.write('</head><body>');
-        printWindow.document.write(printContent);
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-        printWindow.print();
+            otherToGuardCheckbox.addEventListener('change', function() {
+                otherToGuardInput.style.display = this.checked ? 'block' : 'none';
+            });
 
-        alert('Sticky note created and sent to printer!');
-    });
+            const allGuardsCheckbox = document.querySelector('input[value="All Guards"]');
+            if (allGuardsCheckbox) {
+                allGuardsCheckbox.addEventListener('change', function() {
+                    let checkboxes = document.querySelectorAll('input[name="toGuards"]');
+                    checkboxes.forEach(cb => {
+                        if (cb.value !== 'All Guards') {
+                            cb.checked = this.checked;
+                            cb.disabled = this.checked;
+                        }
+                    });
+                    otherToGuardInput.style.display = this.checked ? 'none' : '';
+                });
+            }
 
-    const allGuardsCheckbox = document.querySelector('input[value="All Guards"]');
-    if (allGuardsCheckbox) {
-        allGuardsCheckbox.addEventListener('change', function() {
-            let checkboxes = document.querySelectorAll('input[name="toGuards"]');
-            checkboxes.forEach(cb => {
-                if (cb.value !== 'All Guards') {
-                    cb.checked = this.checked;
-                    cb.disabled = this.checked;
+            // Function to generate sample note
+            function generateSample() {
+                const sampleContent = `
+                    <div class="sample-content">
+                        <div style="border-bottom: 1px solid #000; padding-bottom: 3px; margin-bottom: 5px; font-size: 12px;">
+                            <span>Created: MM/DD/YYYY HH:MM AM/PM</span><br>
+                            <span>Expiry: MM/DD/YYYY HH:MM AM/PM</span>
+                        </div>
+                        <div style="border: 1px solid #000; padding: 5px; margin-bottom: 5px;">
+                            <p style="font-size: 16px; font-weight: bold; margin: 0 0 5px;">Sample Note Title</p>
+                            <p style="margin: 0;">Sample note content goes here.</p>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;"><strong>Suite:</strong> N/A</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;"><strong>From:</strong> Sample Guard</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;"><strong>To:</strong> All Guards</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+                document.getElementById('samplePreview').innerHTML = sampleContent;
+            }
+
+            // Function to generate note content
+            function generateNote() {
+                const noteTitle = document.getElementById('noteTitle').value || '____';
+                const noteContent = document.getElementById('noteContent').value || '____';
+                const suiteNumber = document.getElementById('suiteNumber').value || 'N/A';
+
+                let fromPerson = fromGuardSelect.value;
+                if (fromPerson === 'Other') {
+                    fromPerson = otherFromGuardInput.value || '____';
+                } else if (!fromPerson) {
+                    fromPerson = '____';
+                }
+
+                let toGuardsText = '';
+                let toGuards = Array.from(document.querySelectorAll('input[name="toGuards"]:checked')).map(cb => cb.value);
+                if (toGuards.includes('All Guards')) {
+                    toGuardsText = 'All Guards';
+                } else {
+                    if (toGuards.includes('Other')) {
+                        const otherGuards = otherToGuardInput.value.split(',').map(g => g.trim());
+                        toGuards = toGuards.filter(g => g !== 'Other').concat(otherGuards);
+                    }
+                    toGuardsText = toGuards.join(', ') || '____';
+                }
+
+                const expiryDateTime = document.getElementById('expiryDateTime').value;
+                let expiryText = '';
+                if (expiryDateTime) {
+                    const expiryDate = new Date(expiryDateTime);
+                    expiryText = `Expiry: ${expiryDate.toLocaleDateString()} ${expiryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                }
+
+                const currentDate = new Date();
+                const createdText = `Created: ${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+                const noteContentHtml = `
+                    <div class="note-content">
+                        <div style="border-bottom: 1px solid #000; padding-bottom: 3px; margin-bottom: 5px; font-size: 12px;">
+                            <span>${createdText}</span><br>
+                            ${expiryText ? `<span>${expiryText}</span>` : ''}
+                        </div>
+                        <div style="border: 1px solid #000; padding: 5px; margin-bottom: 5px;">
+                            <p style="font-size: 16px; font-weight: bold; margin: 0 0 5px;">${noteTitle}</p>
+                            <p style="margin: 0;">${noteContent}</p>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;"><strong>Suite:</strong> ${suiteNumber}</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;"><strong>From:</strong> ${fromPerson}</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 3px;"><strong>To:</strong> ${toGuardsText}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+
+                document.getElementById('notePreview').innerHTML = noteContentHtml;
+                return noteContentHtml;
+            }
+
+            // Automatically update the note when form inputs change
+            document.getElementById('stickyNoteForm').addEventListener('input', function() {
+                generateNote();
+            });
+
+            // Generate note on page load
+            generateNote();
+            generateSample();
+
+            document.getElementById('printNoteButton').addEventListener('click', function () {
+                const noteHtmlContent = generateNote();
+                const notePrintArea = document.getElementById('notePrintArea');
+                notePrintArea.innerHTML = noteHtmlContent;
+
+                // Ensure the print area is visible before printing
+                notePrintArea.style.display = 'block';
+
+                window.print();
+            });
+
+            // Clear form button functionality
+            document.getElementById('clearFormButton').addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear the form?')) {
+                    document.getElementById('stickyNoteForm').reset();
+                    otherFromGuardInput.style.display = 'none';
+                    otherToGuardInput.style.display = 'none';
+                    let checkboxes = document.querySelectorAll('input[name="toGuards"]');
+                    checkboxes.forEach(cb => {
+                        cb.checked = false;
+                        cb.disabled = false;
+                    });
+                    generateNote();
                 }
             });
-            const otherToGuardInput = document.getElementById('otherToGuardInput');
-            if (otherToGuardInput) {
-                otherToGuardInput.style.display = this.checked ? 'none' : '';
-                otherToGuardInput.required = !this.checked;
-            }
         });
-    }
-
-    const otherToGuardCheckbox = document.getElementById('otherToGuard');
-    if (otherToGuardCheckbox) {
-        otherToGuardCheckbox.addEventListener('change', function() {
-            const otherInput = document.getElementById('otherToGuardInput');
-            otherInput.style.display = this.checked ? 'block' : 'none';
-            otherInput.required = this.checked;
-            if (this.checked) {
-                otherInput.focus();
-            }
-        });
-    }
-
-    document.getElementById('clearFormButton').addEventListener('click', function() {
-        if (confirm('Are you sure you want to clear the form?')) {
-            document.getElementById('stickyNoteForm').reset();
-            document.getElementById('otherFromGuardInput').style.display = 'none';
-            document.getElementById('otherToGuardInput').style.display = 'none';
-            let checkboxes = document.querySelectorAll('input[name="toGuards"]');
-            checkboxes.forEach(cb => {
-                cb.checked = false;
-                cb.disabled = false;
-            });
-            const otherToGuardInput = document.getElementById('otherToGuardInput');
-            otherToGuardInput.style.display = 'none';
-            otherToGuardInput.value = '';
-            document.getElementById('fromGuard').value = '';
-        }
-    });
-});
-</script>
-</body></html>
+    </script>
+</body>
+</html>
