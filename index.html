@@ -2,269 +2,463 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>The Gloucester on Yonge - Sticky Notes</title>
+    <title>Gloucester Advanced Sticky Note Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* General Styles */
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --font-family: 'Inter', sans-serif;
+            --bg-color: #f0f7f8; /* Light Teal/Gray background */
+            --card-bg-color: #ffffff;
+            --primary-accent-color: #14b8a6; /* Teal-500 */
+            --secondary-accent-color: #0d9488; /* Teal-600 */
+            --text-color: #374151; /* Gray-700 */
+            --border-color: #e5e7eb; /* Gray-200 */
+            --input-border-focus-color: var(--primary-accent-color);
+            --sticky-note-bg: #fefce8; /* Yellow-50 (Lighter Sticky Note for PREVIEW) */
+            --sticky-note-border: #facc15; /* Yellow-400 for PREVIEW */
+            --sticky-note-text: #78350f; /* Amber-900 for PREVIEW */
+            --danger-color: #ef4444; /* Red-500 */
+            --danger-bg-color: #fee2e2; /* Red-100 */
+            
+            /* Print specific variables */
+            --print-bg-color: #ffffff;
+            --print-text-color: #000000;
+            --print-border-color: #000000;
+        }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #e0f7fa, #e0f2f1); /* Light blue-green gradient */
-            color: #333;
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            padding: 10px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-        }
-
-        h1 {
-            text-align: center;
-            color: #006064; /* Dark teal */
-            margin-bottom: 20px;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            max-width: 1500px;
-            margin: 0 auto;
-        }
-
-        .form-container, .sample-container, .note-container {
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            width: 32%;
-            margin: 10px;
             box-sizing: border-box;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+            max-width: 1300px; 
+        }
+        
+        .header-section {
+            text-align: center;
+        }
+
+        .header-section h1 {
+            color: var(--primary-accent-color);
+            font-size: 2.2rem; 
+            margin-bottom: 8px;
+        }
+        .header-section .logo {
+            max-width: 170px; 
+            margin: 10px auto 25px auto;
+        }
+
+        .content-layout { 
+            display: grid;
+            grid-template-columns: 400px 1fr; 
+            gap: 25px;
+            width: 100%;
+        }
+
+        .form-column, .notes-rail-column {
+            background-color: var(--card-bg-color);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+            height: fit-content; 
+        }
+        
+        .notes-rail-column {
+            max-height: 80vh; 
             overflow-y: auto;
-            max-height: 90vh;
         }
 
-        .form-container {
-            order: 1;
+
+        .form-column h2, .notes-rail-column h2 {
+            font-size: 1.5rem;
+            color: var(--primary-accent-color);
+            margin-top: 0;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
         }
 
-        .sample-container {
-            order: 2;
-        }
-
-        .note-container {
-            order: 3;
+        .form-group {
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
-            margin-top: 10px;
-            font-weight: bold;
-            font-size: 1em;
-            color: #555;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
         }
 
-        input, textarea, select {
+        input[type="text"],
+        input[type="datetime-local"],
+        textarea,
+        select {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 2px solid #4dd0e1; /* Light blue */
-            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px; 
             box-sizing: border-box;
-            font-size: 16px;
+            font-size: 0.95rem;
+            font-family: var(--font-family);
+            color: var(--text-color);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="datetime-local"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--input-border-focus-color);
+            outline: 2px solid transparent;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.3); 
         }
 
         textarea {
-            height: 80px;
+            min-height: 100px;
             resize: vertical;
         }
-
-        button {
-            background-color: #00838f; /* Teal */
-            color: white;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            font-size: 18px;
-        }
-
+        
         .button-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        .button-group button, button.single-action-button {
+            flex-grow: 1; 
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease, filter 0.2s ease, transform 0.1s ease;
+        }
+        button.single-action-button {
+            width: 100%; 
+            margin-top: 15px; 
         }
 
-        .button-group button {
-            flex: 1;
+
+        button#addNoteButton {
+            background-color: var(--primary-accent-color);
+            color: white;
+        }
+        button#addNoteButton:hover {
+            background-color: var(--secondary-accent-color);
+        }
+        button#addNoteButton:active {
+            transform: translateY(1px);
         }
 
+
+        button#clearFormButton {
+            background-color: #f8fafc; 
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+        button#clearFormButton:hover {
+            background-color: #f1f5f9; 
+        }
+        
+        .checkbox-group-wrapper { margin-top: 8px; }
         .checkbox-group {
-            margin-top: 10px;
-            display: flex;
-            flex-wrap: wrap;
+            max-height: 150px; 
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #f9fafb; 
         }
-
         .checkbox-group label {
-            flex: 1 1 45%;
+            font-weight: 500;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
-            margin-bottom: 5px;
+            padding: 4px 0;
         }
-
         .checkbox-group input[type="checkbox"] {
-            margin-right: 5px;
             width: auto;
+            margin-right: 8px;
+            accent-color: var(--primary-accent-color);
+        }
+        .all-recipients-checkbox { 
+            font-weight: 600;
         }
 
-        .all-guards-checkbox {
-            grid-column: 1 / -1;
-            margin-bottom: 5px;
+        #otherFromInput, #otherToInput {
+            margin-top: 10px;
         }
 
-        #otherFromGuardInput, #otherToGuardInput {
-            display: none;
-            margin-top: 5px;
+        /* Notes Rail Styling */
+        .notes-rail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .notes-rail-actions button {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button#deleteSelectedNotesBtn {
+            background-color: var(--danger-bg-color);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+        button#deleteAllNotesBtn {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
         }
 
-        .gloucester-logo img {
-            display: block;
-            margin: 0 auto 10px auto;
-            width: 150px;
-            height: auto;
-        }
 
-        .sample, .note {
-            text-align: center;
-            margin-top: 20px;
+        .notes-rail {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px;
         }
-
-        .note-content, .sample-content {
-            border: 2px solid #000;
+        .sticky-note-instance {
+            background-color: var(--sticky-note-bg);
+            border: 1px solid var(--sticky-note-border);
+            color: var(--sticky-note-text);
             padding: 15px;
-            margin: 10px auto;
-            text-align: left;
-            width: 100%;
-            max-width: 300px;
+            box-shadow: 3px 3px 7px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            line-height: 1.4;
             box-sizing: border-box;
-            page-break-inside: avoid;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px; 
+            position: relative; 
         }
+        .sticky-note-instance .note-selection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .sticky-note-instance .note-selection-header .title {
+             flex-grow: 1;
+             margin:0; 
+        }
+         .sticky-note-instance .note-selection-header input[type="checkbox"] {
+            margin-left: 10px;
+            accent-color: var(--primary-accent-color);
+        }
+
+        .sticky-note-instance .header {
+            border-bottom: 1px dashed rgba(120, 53, 15, 0.3); 
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+        }
+        .sticky-note-instance .header span { display: block; }
+        .sticky-note-instance .title { 
+            font-size: 1.1em; font-weight: 700; color: #422006;
+        }
+        .sticky-note-instance .content-body {
+            margin: 0 0 10px 0; flex-grow: 1; white-space: pre-wrap;
+        }
+        .sticky-note-instance .details-table {
+            width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: auto;
+        }
+        .sticky-note-instance .details-table td {
+            border: 1px solid rgba(120, 53, 15, 0.3); padding: 4px 6px;
+        }
+        .sticky-note-instance .details-table strong { color: #57534e; }
+        
+        .note-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(120, 53, 15, 0.3);
+        }
+        .note-actions button {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .print-this-note-btn { background-color: var(--secondary-accent-color); color: white; border: none;}
+        .print-this-note-btn:hover { background-color: var(--primary-accent-color); }
+        .remove-this-note-btn { background-color: var(--danger-bg-color); color: var(--danger-color); border: 1px solid var(--danger-color);}
+        .remove-this-note-btn:hover { background-color: #fecaca; }
+
 
         /* Print Styles */
         @media print {
-            body * {
-                visibility: hidden;
+            body {
+                background-color: var(--print-bg-color) !important; padding: 0 !important; margin: 0 !important; color: var(--print-text-color) !important;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
-
+            body * { visibility: hidden !important; }
+            #notePrintArea, #notePrintArea * { visibility: visible !important; }
             #notePrintArea {
-                display: block !important;
-                visibility: visible;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 80mm;
-                margin: 0;
-                padding: 0;
+                display: block !important; /* Ensure it's displayed for printing */
+                position: absolute !important; left: 0 !important; top: 0 !important;
+                width: 80mm !important; height: auto !important; margin: 0 !important;
+                padding: 2.5mm !important; box-sizing: border-box !important;
+                background-color: var(--print-bg-color) !important;
+                color: var(--print-text-color) !important;
+                border: 1px solid var(--print-border-color) !important;
             }
-
-            #notePrintArea * {
-                visibility: visible;
+            #notePrintArea .sticky-note-content-print {
+                width: 100% !important; height: auto !important; min-height: 0 !important;
+                padding: 0 !important; border: none !important; box-shadow: none !important;
+                font-size: 11.5pt !important; 
+                line-height: 1.35 !important; 
+                background-color: var(--print-bg-color) !important;
+                color: var(--print-text-color) !important;
             }
-
-            .action-buttons {
-                display: none;
+            #notePrintArea .header {
+                font-size: 9pt !important; 
+                padding-bottom: 1.5mm !important;
+                margin-bottom: 1.5mm !important; border-bottom: 1px solid var(--print-border-color) !important;
+            }
+            #notePrintArea .title {
+                font-size: 13pt !important; 
+                font-weight: bold !important;
+                margin-bottom: 2mm !important; color: var(--print-text-color) !important;
+            }
+            #notePrintArea .content-body {
+                margin-bottom: 2mm !important; color: var(--print-text-color) !important;
+                white-space: pre-wrap !important;
+                font-size: 11pt !important; 
+            }
+            #notePrintArea .details-table {
+                font-size: 9.5pt !important; 
+                color: var(--print-text-color) !important;
+            }
+            #notePrintArea .details-table td {
+                padding: 1mm 1.2mm !important; border: 1px solid var(--print-border-color) !important;
+                color: var(--print-text-color) !important;
+            }
+             #notePrintArea .details-table strong {
+                color: var(--print-text-color) !important; font-weight: bold !important;
             }
         }
 
         /* Responsive adjustments */
-        @media (max-width: 800px) {
-            .container {
-                flex-direction: column;
+        @media (max-width: 1000px) { 
+            .content-layout {
+                grid-template-columns: 1fr; 
             }
-
-            .form-container, .sample-container, .note-container {
-                width: 100%;
-                max-width: none;
+            .notes-rail-column {
+                margin-top: 0; 
+                max-height: 60vh; 
             }
         }
+         @media (max-width: 600px) {
+            body { padding: 15px; }
+            .header-section h1 { font-size: 1.8rem; }
+            .form-column, .notes-rail-column { padding: 20px; }
+            .button-group { flex-direction: column; }
+            .notes-rail { grid-template-columns: 1fr; } 
+        }
+
     </style>
 </head>
 <body>
-    <h1>The Gloucester on Yonge - Sticky Notes</h1>
-    <div class="container">
-        <!-- Form Section -->
-        <div class="form-container">
-            <div class="gloucester-logo">
-                <img src="https://i.postimg.cc/HW76hBDq/Gloucester-Logo.jpg" alt="The Gloucester on Yonge">
-            </div>
-            <form id="stickyNoteForm">
-                <!-- Form fields -->
-                <label for="noteTitle">Note Title:</label>
-                <input type="text" id="noteTitle" name="noteTitle" placeholder="Enter the note title">
-
-                <label for="noteContent">Note Content:</label>
-                <textarea id="noteContent" name="noteContent" placeholder="Enter the note content"></textarea>
-
-                <label for="suiteNumber">Suite Number (optional):</label>
-                <input type="text" id="suiteNumber" name="suiteNumber" placeholder="Enter suite number (if applicable)">
-
-                <label id="fromGuardLabel" for="fromGuard">From Guard:</label>
-                <select id="fromGuard" name="fromGuard">
-                    <option value="">Select a guard</option>
-                    <option value="Ajaypreet">Ajaypreet</option>
-                    <option value="Amritpal">Amritpal</option>
-                    <option value="Meet">Meet</option>
-                    <option value="Jatin">Jatin</option>
-                    <option value="Sourav">Sourav</option>
-                    <option value="Jashanpreet">Jashanpreet</option>
-                    <option value="Arnav">Arnav</option>
-                    <option value="Lakhveer">Lakhveer</option>
-                    <option value="Other">Other</option>
-                </select>
-                <input type="text" id="otherFromGuardInput" placeholder="Enter name (management/other department)">
-
-                <label for="toGuards">To Guards:</label>
-                <div class="checkbox-group">
-                    <label class="all-guards-checkbox"><input type="checkbox" name="toGuards" value="All Guards"> All Guards</label>
-                    <label><input type="checkbox" name="toGuards" value="Ajaypreet"> Ajaypreet</label>
-                    <label><input type="checkbox" name="toGuards" value="Amritpal"> Amritpal</label>
-                    <label><input type="checkbox" name="toGuards" value="Meet"> Meet</label>
-                    <label><input type="checkbox" name="toGuards" value="Jatin"> Jatin</label>
-                    <label><input type="checkbox" name="toGuards" value="Sourav"> Sourav</label>
-                    <label><input type="checkbox" name="toGuards" value="Jashanpreet"> Jashanpreet</label>
-                    <label><input type="checkbox" name="toGuards" value="Arnav"> Arnav</label>
-                    <label><input type="checkbox" name="toGuards" value="Lakhveer"> Lakhveer</label>
-                    <label><input type="checkbox" id="otherToGuard" name="toGuards" value="Other"> Other</label>
-                </div>
-                <input type="text" id="otherToGuardInput" placeholder="Enter names (comma-separated)">
-
-                <label for="expiryDateTime">Expiry Date and Time (optional):</label>
-                <input type="datetime-local" id="expiryDateTime" name="expiryDateTime">
-
-                <div class="button-group">
-                    <button type="button" id="printNoteButton">Print Sticky Note</button>
-                    <button type="button" id="clearFormButton">Clear Form</button>
-                </div>
-            </form>
+    <div class="main-container">
+        <div class="header-section">
+            <img src="https://i.postimg.cc/Xv23sJ1M/Gloucester-on-young-transparent-LOGO.png" alt="The Gloucester on Yonge Logo" class="logo" onerror="this.alt='Gloucester Logo'; this.src='https://placehold.co/170x50/0D9488/FFFFFF?text=Logo&font=inter';">
+            <h1>Advanced Sticky Note Generator</h1>
         </div>
 
-        <!-- Sample Preview Section -->
-        <div class="sample-container">
-            <h2>Sample Preview</h2>
-            <div id="samplePreview" class="sample">
-                <!-- Sample content will be inserted here -->
-            </div>
-        </div>
+        <div class="content-layout">
+            <div class="form-column">
+                <h2>Create New Note</h2>
+                <form id="stickyNoteForm">
+                    <div class="form-group">
+                        <label for="noteTitle">Note Title:</label>
+                        <input type="text" id="noteTitle" name="noteTitle" placeholder="Enter note title">
+                    </div>
 
-        <!-- Note Preview Section -->
-        <div class="note-container">
-            <h2>Note Preview</h2>
-            <div id="notePreview" class="note">
-                <!-- Note content will be inserted here -->
+                    <div class="form-group">
+                        <label for="noteContent">Note Content:</label>
+                        <textarea id="noteContent" name="noteContent" placeholder="Enter note content"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="suiteNumber">Suite Number (optional):</label>
+                        <input type="text" id="suiteNumber" name="suiteNumber" placeholder="e.g., 123, PH01">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fromSource">From:</label>
+                        <select id="fromSource" name="fromSource">
+                            <option value="">Select Source</option>
+                            <option value="Management">Management</option>
+                            <option value="Superintendent">Superintendent</option>
+                            <option value="Guard">Security Guard</option>
+                            <option value="Other">Other (Specify)</option>
+                        </select>
+                        <select id="fromGuardName" name="fromGuardName" style="display:none; margin-top: 8px;">
+                            <option value="">Select Guard</option>
+                            </select>
+                        <input type="text" id="otherFromInput" name="otherFrom" placeholder="Specify other source" style="display:none; margin-top: 8px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>To:</label>
+                        <div class="checkbox-group-wrapper">
+                            <div class="checkbox-group" id="toRecipientsCheckboxes">
+                                <label class="all-recipients-checkbox"><input type="checkbox" name="toRecipients" value="All Staff"> All Staff</label>
+                                <label><input type="checkbox" name="toRecipients" value="Management"> Management</label>
+                                <label><input type="checkbox" name="toRecipients" value="Superintendent"> Superintendent</label>
+                                <label><input type="checkbox" name="toRecipients" value="All Guards"> All Guards</label>
+                                <label><input type="checkbox" id="otherToRecipientCheckbox" name="toRecipients" value="Other"> Other</label>
+                            </div>
+                        </div>
+                        <input type="text" id="otherToInput" name="otherTo" placeholder="Specify other recipients (comma-separated)" style="display:none; margin-top: 8px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expiryDateTime">Expiry Date & Time (optional):</label>
+                        <input type="datetime-local" id="expiryDateTime" name="expiryDateTime">
+                    </div>
+
+                    <button type="button" id="addNoteButton" class="single-action-button">➕ Add Note to Rail</button>
+                    <div class="button-group">
+                        <button type="button" id="clearFormButton">🧹 Clear Form</button>
+                    </div>
+                </form>
             </div>
-            <!-- Print button is included in the form -->
+
+            <div class="notes-rail-column">
+                <div class="notes-rail-header">
+                    <h2>Notes Rail</h2>
+                    <div class="notes-rail-actions">
+                        <button type="button" id="deleteSelectedNotesBtn">🗑️ Delete Selected</button>
+                        <button type="button" id="deleteAllNotesBtn">❌ Delete All</button>
+                    </div>
+                </div>
+                <div id="notesRail" class="notes-rail">
+                    <p id="emptyRailMessage" style="text-align:center; color: #94a3b8;">No notes added yet. Fill the form and click "Add Note".</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -272,162 +466,500 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const fromGuardSelect = document.getElementById('fromGuard');
-            const otherFromGuardInput = document.getElementById('otherFromGuardInput');
-            const otherToGuardCheckbox = document.getElementById('otherToGuard');
-            const otherToGuardInput = document.getElementById('otherToGuardInput');
+            console.log("DOM fully loaded and parsed. Initializing script...");
 
-            function toggleOtherInput(selectElement, otherInput) {
-                otherInput.style.display = selectElement.value === 'Other' ? 'block' : 'none';
+            // Critical element checks
+            const form = document.getElementById('stickyNoteForm');
+            if (!form) {
+                console.error("CRITICAL ERROR: stickyNoteForm not found! Form functionality will be severely impaired.");
             }
 
-            fromGuardSelect.addEventListener('change', function() {
-                toggleOtherInput(this, otherFromGuardInput);
-            });
+            const notesRail = document.getElementById('notesRail');
+            if (!notesRail) {
+                console.error("CRITICAL ERROR: notesRail container not found! Notes cannot be displayed.");
+            }
+            
+            const toRecipientsCheckboxesContainer = document.getElementById('toRecipientsCheckboxes');
+            if (!toRecipientsCheckboxesContainer) {
+                console.error("CRITICAL ERROR: toRecipientsCheckboxes container not found! 'To' field functionality will be broken.");
+            }
 
-            otherToGuardCheckbox.addEventListener('change', function() {
-                otherToGuardInput.style.display = this.checked ? 'block' : 'none';
-            });
 
-            const allGuardsCheckbox = document.querySelector('input[value="All Guards"]');
-            if (allGuardsCheckbox) {
-                allGuardsCheckbox.addEventListener('change', function() {
-                    let checkboxes = document.querySelectorAll('input[name="toGuards"]');
-                    checkboxes.forEach(cb => {
-                        if (cb.value !== 'All Guards') {
-                            cb.checked = this.checked;
-                            cb.disabled = this.checked;
+            // Form elements
+            const fromSourceSelect = document.getElementById('fromSource');
+            const fromGuardNameSelect = document.getElementById('fromGuardName');
+            const otherFromInput = document.getElementById('otherFromInput');
+            
+            const otherToRecipientCheckbox = document.getElementById('otherToRecipientCheckbox');
+            const otherToInput = document.getElementById('otherToInput');
+            
+            const emptyRailMessage = document.getElementById('emptyRailMessage'); 
+            const notePrintArea = document.getElementById('notePrintArea');
+            
+            // Buttons
+            const addNoteButton = document.getElementById('addNoteButton');
+            const clearFormButton = document.getElementById('clearFormButton');
+            const deleteSelectedNotesBtn = document.getElementById('deleteSelectedNotesBtn');
+            const deleteAllNotesBtn = document.getElementById('deleteAllNotesBtn');
+
+            const LOCAL_STORAGE_KEY = 'gloucesterStickyNotes_v3';
+            let notes = []; 
+            let noteIdCounter = 0;
+
+            const guardNames = [
+                "Ajaypreet Singh", "Amritpal Kaur", "Meet Shah", "Jatin Kumar", 
+                "Jashanpreet Singh", "Arnav Bharti", "Lakhveer Kaur", "Simran Kaur", 
+                "Praveen Kumar Mathad"
+            ];
+
+            function saveNotesToLocalStorage() {
+                try {
+                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(notes));
+                    console.log("Notes saved to local storage. Count:", notes.length);
+                } catch (e) {
+                    console.error("Error saving notes to localStorage:", e);
+                    alert("Could not save notes. Local storage might be full or disabled.");
+                }
+            }
+
+            function loadNotesFromLocalStorage() {
+                console.log("Attempting to load notes from local storage...");
+                const storedNotesString = localStorage.getItem(LOCAL_STORAGE_KEY);
+                
+                notes = []; 
+                noteIdCounter = 0;
+
+                if (storedNotesString) {
+                    try {
+                        const parsedNotes = JSON.parse(storedNotesString);
+                        if (Array.isArray(parsedNotes)) {
+                            notes = parsedNotes;
+                            if (notes.length > 0) {
+                                let maxId = -1;
+                                for (const note of notes) {
+                                    if (note && typeof note.id !== 'undefined') {
+                                        const id = parseInt(String(note.id), 10);
+                                        if (!isNaN(id) && id > maxId) {
+                                            maxId = id;
+                                        }
+                                    } else {
+                                        console.warn("Found note with missing or undefined ID:", note);
+                                    }
+                                }
+                                noteIdCounter = maxId + 1;
+                            }
+                            console.log("Loaded notes from storage. Count:", notes.length, "Next ID will be:", noteIdCounter);
+                        } else {
+                            console.warn("Stored notes data is not a valid array. Clearing potentially corrupted data.");
+                            localStorage.removeItem(LOCAL_STORAGE_KEY); 
                         }
-                    });
-                    otherToGuardInput.style.display = this.checked ? 'none' : '';
+                    } catch (e) {
+                        console.error("Error parsing stored notes from localStorage. Clearing data:", e);
+                        localStorage.removeItem(LOCAL_STORAGE_KEY); 
+                    }
+                } else {
+                    console.log("No notes found in local storage.");
+                }
+                renderNotesRail(); 
+                console.log("Initial noteIdCounter after load attempt:", noteIdCounter);
+            }
+
+
+            function populateGuardDropdowns() {
+                if (!fromGuardNameSelect) {
+                    console.error("fromGuardNameSelect dropdown not found for populating.");
+                    return;
+                }
+                fromGuardNameSelect.innerHTML = '<option value="">Select Guard</option>'; 
+                guardNames.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    fromGuardNameSelect.appendChild(option); 
                 });
             }
 
-            // Function to generate sample note
-            function generateSample() {
-                const sampleContent = `
-                    <div class="sample-content">
-                        <div style="border-bottom: 1px solid #000; padding-bottom: 3px; margin-bottom: 5px; font-size: 12px;">
-                            <span>Created: MM/DD/YYYY HH:MM AM/PM</span><br>
-                            <span>Expiry: MM/DD/YYYY HH:MM AM/PM</span>
-                        </div>
-                        <div style="border: 1px solid #000; padding: 5px; margin-bottom: 5px;">
-                            <p style="font-size: 16px; font-weight: bold; margin: 0 0 5px;">Sample Note Title</p>
-                            <p style="margin: 0;">Sample note content goes here.</p>
-                        </div>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="border: 1px solid #000; padding: 3px;"><strong>Suite:</strong> N/A</td>
-                            </tr>
-                            <tr>
-                                <td style="border: 1px solid #000; padding: 3px;"><strong>From:</strong> Sample Guard</td>
-                            </tr>
-                            <tr>
-                                <td style="border: 1px solid #000; padding: 3px;"><strong>To:</strong> All Guards</td>
-                            </tr>
-                        </table>
-                    </div>
-                `;
-                document.getElementById('samplePreview').innerHTML = sampleContent;
+            function populateGuardCheckboxes() {
+                if (!toRecipientsCheckboxesContainer || !otherToRecipientCheckbox) {
+                    console.error("Cannot populate guard checkboxes: container or 'Other' checkbox missing.");
+                    return;
+                }
+                const existingIndividualGuardCheckboxes = toRecipientsCheckboxesContainer.querySelectorAll('.individual-guard-checkbox');
+                existingIndividualGuardCheckboxes.forEach(cbLabel => {
+                    if(cbLabel.parentElement) cbLabel.parentElement.remove(); 
+                    else cbLabel.remove(); 
+                });
+                
+                const otherCheckboxLabel = otherToRecipientCheckbox.parentElement; 
+                if (!otherCheckboxLabel) {
+                    console.error("Parent label for 'Other' checkbox not found. Cannot insert guard checkboxes correctly.");
+                    return;
+                }
+
+                guardNames.forEach(name => {
+                    const label = document.createElement('label');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'toRecipients';
+                    checkbox.value = name;
+                    checkbox.classList.add('individual-guard-checkbox'); 
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(` ${name}`));
+                    toRecipientsCheckboxesContainer.insertBefore(label, otherCheckboxLabel);
+                });
             }
+            
+            populateGuardDropdowns();
+            populateGuardCheckboxes();
 
-            // Function to generate note content
-            function generateNote() {
-                const noteTitle = document.getElementById('noteTitle').value || '____';
-                const noteContent = document.getElementById('noteContent').value || '____';
-                const suiteNumber = document.getElementById('suiteNumber').value || 'N/A';
+            if (fromSourceSelect) {
+                fromSourceSelect.addEventListener('change', function() {
+                    if(fromGuardNameSelect) fromGuardNameSelect.style.display = (this.value === 'Guard') ? 'block' : 'none';
+                    if(otherFromInput) otherFromInput.style.display = (this.value === 'Other') ? 'block' : 'none';
+                    
+                    if (this.value !== 'Guard' && fromGuardNameSelect) fromGuardNameSelect.value = '';
+                    if (this.value !== 'Other' && otherFromInput) otherFromInput.value = '';
+                });
+            } else { console.error("fromSourceSelect not found, listener not attached.");}
 
-                let fromPerson = fromGuardSelect.value;
-                if (fromPerson === 'Other') {
-                    fromPerson = otherFromGuardInput.value || '____';
-                } else if (!fromPerson) {
-                    fromPerson = '____';
-                }
+            if (otherToRecipientCheckbox) {
+                otherToRecipientCheckbox.addEventListener('change', function() {
+                    if(otherToInput) otherToInput.style.display = this.checked ? 'block' : 'none';
+                    if (!this.checked && otherToInput) otherToInput.value = '';
+                });
+            } else { console.error("otherToRecipientCheckbox not found, listener not attached.");}
 
-                let toGuardsText = '';
-                let toGuards = Array.from(document.querySelectorAll('input[name="toGuards"]:checked')).map(cb => cb.value);
-                if (toGuards.includes('All Guards')) {
-                    toGuardsText = 'All Guards';
-                } else {
-                    if (toGuards.includes('Other')) {
-                        const otherGuards = otherToGuardInput.value.split(',').map(g => g.trim());
-                        toGuards = toGuards.filter(g => g !== 'Other').concat(otherGuards);
-                    }
-                    toGuardsText = toGuards.join(', ') || '____';
-                }
-
-                const expiryDateTime = document.getElementById('expiryDateTime').value;
-                let expiryText = '';
-                if (expiryDateTime) {
-                    const expiryDate = new Date(expiryDateTime);
-                    expiryText = `Expiry: ${expiryDate.toLocaleDateString()} ${expiryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-                }
-
-                const currentDate = new Date();
-                const createdText = `Created: ${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-
-                const noteContentHtml = `
-                    <div class="note-content">
-                        <div style="border-bottom: 1px solid #000; padding-bottom: 3px; margin-bottom: 5px; font-size: 12px;">
-                            <span>${createdText}</span><br>
-                            ${expiryText ? `<span>${expiryText}</span>` : ''}
-                        </div>
-                        <div style="border: 1px solid #000; padding: 5px; margin-bottom: 5px;">
-                            <p style="font-size: 16px; font-weight: bold; margin: 0 0 5px;">${noteTitle}</p>
-                            <p style="margin: 0;">${noteContent}</p>
-                        </div>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="border: 1px solid #000; padding: 3px;"><strong>Suite:</strong> ${suiteNumber}</td>
-                            </tr>
-                            <tr>
-                                <td style="border: 1px solid #000; padding: 3px;"><strong>From:</strong> ${fromPerson}</td>
-                            </tr>
-                            <tr>
-                                <td style="border: 1px solid #000; padding: 3px;"><strong>To:</strong> ${toGuardsText}</td>
-                            </tr>
-                        </table>
-                    </div>
-                `;
-
-                document.getElementById('notePreview').innerHTML = noteContentHtml;
-                return noteContentHtml;
-            }
-
-            // Automatically update the note when form inputs change
-            document.getElementById('stickyNoteForm').addEventListener('input', function() {
-                generateNote();
-            });
-
-            // Generate note on page load
-            generateNote();
-            generateSample();
-
-            document.getElementById('printNoteButton').addEventListener('click', function () {
-                const noteHtmlContent = generateNote();
-                const notePrintArea = document.getElementById('notePrintArea');
-                notePrintArea.innerHTML = noteHtmlContent;
-
-                // Ensure the print area is visible before printing
-                notePrintArea.style.display = 'block';
-
-                window.print();
-            });
-
-            // Clear form button functionality
-            document.getElementById('clearFormButton').addEventListener('click', function() {
-                if (confirm('Are you sure you want to clear the form?')) {
-                    document.getElementById('stickyNoteForm').reset();
-                    otherFromGuardInput.style.display = 'none';
-                    otherToGuardInput.style.display = 'none';
-                    let checkboxes = document.querySelectorAll('input[name="toGuards"]');
-                    checkboxes.forEach(cb => {
-                        cb.checked = false;
-                        cb.disabled = false;
+            if (toRecipientsCheckboxesContainer) {
+                const allStaffCheckbox = toRecipientsCheckboxesContainer.querySelector('input[value="All Staff"]');
+                if (allStaffCheckbox) {
+                    allStaffCheckbox.addEventListener('change', function() {
+                        const allOtherCheckboxes = toRecipientsCheckboxesContainer.querySelectorAll('input[name="toRecipients"]:not([value="All Staff"])');
+                        allOtherCheckboxes.forEach(cb => {
+                            cb.checked = this.checked;
+                            cb.disabled = this.checked;
+                            if (this.checked && cb.id === 'otherToRecipientCheckbox' && otherToInput) {
+                                otherToInput.style.display = 'none';
+                                otherToInput.value = '';
+                            }
+                        });
+                        if (!this.checked && otherToRecipientCheckbox && otherToRecipientCheckbox.checked && otherToInput) { 
+                             otherToInput.style.display = 'block';
+                        }
                     });
-                    generateNote();
+                } else { console.error("allStaffCheckbox not found within toRecipientsCheckboxesContainer.");}
+                
+                const allGuardsCheckbox = toRecipientsCheckboxesContainer.querySelector('input[value="All Guards"]');
+                if(allGuardsCheckbox) {
+                    allGuardsCheckbox.addEventListener('change', function() {
+                        const individualGuardCbs = toRecipientsCheckboxesContainer.querySelectorAll('.individual-guard-checkbox');
+                        individualGuardCbs.forEach(cb => {
+                            cb.checked = this.checked;
+                        });
+                    });
+                } else { console.error("allGuardsCheckbox not found within toRecipientsCheckboxesContainer.");}
+            }
+
+
+            function formatDateTime(dateTimeString) {
+                if (!dateTimeString) return "";
+                try {
+                    const dateObj = new Date(dateTimeString);
+                    if (isNaN(dateObj.getTime())) return ""; 
+                    const year = dateObj.getFullYear();
+                    const month = dateObj.toLocaleString('en-US', { month: 'short' });
+                    const day = String(dateObj.getDate()).padStart(2, '0');
+                    const time = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    return `${day}-${month}-${year}, ${time}`;
+                } catch (e) { 
+                    console.warn("Error formatting date:", dateTimeString, e);
+                    return ""; 
                 }
-            });
+            }
+
+            function getNoteDataFromForm() {
+                const noteTitleEl = document.getElementById('noteTitle');
+                const noteContentEl = document.getElementById('noteContent');
+                const suiteNumberEl = document.getElementById('suiteNumber');
+                const expiryDateTimeEl = document.getElementById('expiryDateTime');
+
+                const title = noteTitleEl ? noteTitleEl.value.trim() || "Untitled Note" : "Untitled Note";
+                const content = noteContentEl ? noteContentEl.value.trim() || "No content." : "No content.";
+                const suite = suiteNumberEl ? suiteNumberEl.value.trim() || "N/A" : "N/A";
+                
+                let fromDisplay = "N/A";
+                if (fromSourceSelect) {
+                    fromDisplay = fromSourceSelect.value;
+                    if (fromSourceSelect.value === 'Guard' && fromGuardNameSelect) {
+                        fromDisplay = fromGuardNameSelect.value || "Guard (Unspecified)";
+                    } else if (fromSourceSelect.value === 'Other' && otherFromInput) {
+                        fromDisplay = otherFromInput.value.trim() || "Other";
+                    } else if (!fromSourceSelect.value) {
+                        fromDisplay = "N/A";
+                    }
+                }
+
+
+                let toDisplayArray = [];
+                if (toRecipientsCheckboxesContainer) {
+                    const allStaffCb = toRecipientsCheckboxesContainer.querySelector('input[value="All Staff"]');
+                    if (allStaffCb && allStaffCb.checked) {
+                        toDisplayArray.push("All Staff");
+                    } else {
+                        const selectedRecipients = toRecipientsCheckboxesContainer.querySelectorAll('input[name="toRecipients"]:checked:not([value="All Staff"])');
+                        selectedRecipients.forEach(cb => {
+                            if (cb.value === "Other" && otherToInput && otherToInput.value.trim()) {
+                                otherToInput.value.trim().split(',').forEach(name => {
+                                    if (name.trim()) toDisplayArray.push(name.trim());
+                                });
+                            } else if (cb.value !== "Other") {
+                                toDisplayArray.push(cb.value);
+                            }
+                        });
+                    }
+                }
+                const toDisplay = toDisplayArray.length > 0 ? toDisplayArray.join(', ') : "N/A";
+
+                const createdDateTime = new Date().toISOString();
+                const expiryDateTime = expiryDateTimeEl ? expiryDateTimeEl.value : "";
+                
+                console.log("Assigning ID:", noteIdCounter);
+                return {
+                    id: noteIdCounter++, 
+                    title, content, suite, 
+                    from: fromDisplay, 
+                    to: toDisplay, 
+                    created: createdDateTime, 
+                    expiry: expiryDateTime
+                };
+            }
+            
+            function createNoteElement(noteData) {
+                const noteEl = document.createElement('div');
+                noteEl.classList.add('sticky-note-instance');
+                noteEl.dataset.noteId = noteData.id;
+
+                const createdFormatted = formatDateTime(noteData.created);
+                const expiryFormatted = formatDateTime(noteData.expiry);
+
+                const safeContent = noteData.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, '<br>');
+                const safeTitle = noteData.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+
+                noteEl.innerHTML = `
+                    <div class="note-selection-header">
+                        <div class="title">${safeTitle}</div>
+                        <input type="checkbox" class="note-select-checkbox" data-note-id="${noteData.id}" title="Select this note">
+                    </div>
+                    <div class="header">
+                        <span>Created: ${createdFormatted}</span>
+                        ${expiryFormatted ? `<span>Expiry: ${expiryFormatted}</span>` : ''}
+                    </div>
+                    <div class="content-body">${safeContent}</div>
+                    <table class="details-table">
+                        <tr><td><strong>Suite:</strong></td><td>${noteData.suite.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td></tr>
+                        <tr><td><strong>From:</strong></td><td>${noteData.from.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td></tr>
+                        <tr><td><strong>To:</strong></td><td>${noteData.to.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td></tr>
+                    </table>
+                    <div class="note-actions">
+                        <button type="button" class="print-this-note-btn">🖨️ Print</button>
+                        <button type="button" class="remove-this-note-btn">🗑️ Remove</button>
+                    </div>
+                `;
+
+                const printBtn = noteEl.querySelector('.print-this-note-btn');
+                if (printBtn) printBtn.addEventListener('click', () => printSpecificNote(noteData));
+                
+                const removeBtn = noteEl.querySelector('.remove-this-note-btn');
+                if (removeBtn) removeBtn.addEventListener('click', () => removeNote(noteData.id));
+                
+                return noteEl;
+            }
+
+            function renderNotesRail() {
+                if (!notesRail) {
+                    console.error("Cannot render notes: notesRail element not found.");
+                    return;
+                }
+                console.log("Rendering notes rail. Notes count:", notes.length);
+                notesRail.innerHTML = ''; 
+                
+                if (notes.length === 0) {
+                    if (emptyRailMessage) { 
+                        if (!notesRail.contains(emptyRailMessage)) { 
+                             notesRail.appendChild(emptyRailMessage); 
+                        }
+                        emptyRailMessage.style.display = 'block'; 
+                    } else {
+                        const p = document.createElement('p');
+                        p.textContent = "No notes added yet. Fill the form and click \"Add Note\".";
+                        p.style.textAlign = "center";
+                        p.style.color = "#94a3b8";
+                        notesRail.appendChild(p);
+                    }
+                } else {
+                     if (emptyRailMessage && notesRail.contains(emptyRailMessage)) { 
+                        emptyRailMessage.style.display = 'none'; 
+                     }
+                    notes.forEach(noteData => {
+                        if (noteData && typeof noteData.id !== 'undefined') { 
+                            notesRail.appendChild(createNoteElement(noteData));
+                        } else {
+                            console.warn("Skipping rendering of invalid note data:", noteData);
+                        }
+                    });
+                }
+            }
+            
+            if (addNoteButton) {
+                addNoteButton.addEventListener('click', function() {
+                    console.log("Add Note button clicked");
+                    try {
+                        const newNoteData = getNoteDataFromForm();
+                        console.log("New note data:", newNoteData);
+                        notes.push(newNoteData);
+                        saveNotesToLocalStorage();
+                        renderNotesRail();
+                        console.log("Note added and rail rendered. Current noteIdCounter is now:", noteIdCounter);
+                    } catch (e) {
+                        console.error("Error in addNoteButton click handler:", e);
+                        alert("An error occurred while adding the note. Please check the console for details.");
+                    }
+                });
+                console.log("Add Note button listener attached.");
+            } else {
+                console.error("addNoteButton not found! Cannot attach listener.");
+            }
+
+            function printSpecificNote(noteData) {
+                if (!notePrintArea) {
+                    console.error("notePrintArea not found. Cannot print.");
+                    alert("Error: Print area not found.");
+                    return;
+                }
+                const createdFormatted = formatDateTime(noteData.created);
+                const expiryFormatted = formatDateTime(noteData.expiry);
+                const safeTitle = noteData.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                const safeContent = noteData.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                const safeSuite = noteData.suite.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                const safeFrom = noteData.from.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                const safeTo = noteData.to.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+                const printHtml = `
+                    <div class="sticky-note-content-print">
+                        <div class="header">
+                            <span>Created: ${createdFormatted}</span>
+                            ${expiryFormatted ? `<span>Expiry: ${expiryFormatted}</span>` : ''}
+                        </div>
+                        <div class="title">${safeTitle}</div>
+                        <div class="content-body" style="white-space: pre-wrap;">${safeContent}</div>
+                        <table class="details-table">
+                            <tr><td><strong>Suite:</strong></td><td>${safeSuite}</td></tr>
+                            <tr><td><strong>From:</strong></td><td>${safeFrom}</td></tr>
+                            <tr><td><strong>To:</strong></td><td>${safeTo}</td></tr>
+                        </table>
+                    </div>
+                `;
+                notePrintArea.innerHTML = printHtml;
+                notePrintArea.style.display = 'block'; // Make the print area visible
+
+                const handleAfterPrint = () => {
+                    notePrintArea.style.display = 'none'; // Hide the print area again
+                    window.removeEventListener('afterprint', handleAfterPrint); // Clean up the event listener
+                    console.log("Afterprint event handled, print area hidden.");
+                };
+                window.addEventListener('afterprint', handleAfterPrint);
+
+                window.print(); // Trigger the browser's print dialog
+            }
+
+            function removeNote(noteIdToRemove) {
+                const idToRemove = parseInt(String(noteIdToRemove), 10);
+                if (confirm('Are you sure you want to remove this note?')) {
+                    notes = notes.filter(note => {
+                        if (note && typeof note.id !== 'undefined') {
+                            return parseInt(String(note.id), 10) !== idToRemove;
+                        }
+                        return false; 
+                    });
+                    saveNotesToLocalStorage();
+                    renderNotesRail();
+                    console.log("Note removed. ID:", idToRemove);
+                }
+            }
+            
+            if (deleteSelectedNotesBtn) {
+                deleteSelectedNotesBtn.addEventListener('click', function() {
+                    console.log("Delete Selected button clicked");
+                    if (!notesRail) {
+                         alert("Error: Notes rail not found."); return;
+                    }
+                    const selectedCheckboxes = notesRail.querySelectorAll('.note-select-checkbox:checked');
+                    if (selectedCheckboxes.length === 0) {
+                        alert('Please select at least one note to delete.');
+                        return;
+                    }
+                    if (confirm(`Are you sure you want to delete ${selectedCheckboxes.length} selected note(s)?`)) {
+                        const idsToDelete = Array.from(selectedCheckboxes).map(cb => parseInt(cb.dataset.noteId, 10));
+                        notes = notes.filter(note => {
+                             if (note && typeof note.id !== 'undefined') {
+                                return !idsToDelete.includes(parseInt(String(note.id), 10));
+                            }
+                            return false;
+                        });
+                        saveNotesToLocalStorage();
+                        renderNotesRail();
+                        console.log("Selected notes deleted. IDs:", idsToDelete);
+                    }
+                });
+                console.log("Delete Selected button listener attached.");
+            }  else { console.error("deleteSelectedNotesBtn not found! Cannot attach listener."); }
+
+            if(deleteAllNotesBtn) {
+                deleteAllNotesBtn.addEventListener('click', function() {
+                    console.log("Delete All button clicked");
+                    if (notes.length === 0) {
+                        alert('There are no notes to delete.');
+                        return;
+                    }
+                    if (confirm('Are you sure you want to delete ALL notes? This action cannot be undone.')) {
+                        notes = [];
+                        noteIdCounter = 0; 
+                        saveNotesToLocalStorage(); 
+                        renderNotesRail();
+                        console.log("All notes deleted. noteIdCounter reset to 0.");
+                    }
+                });
+                console.log("Delete All button listener attached.");
+            } else { console.error("deleteAllNotesBtn not found! Cannot attach listener."); }
+
+
+            if(clearFormButton) {
+                clearFormButton.addEventListener('click', function() {
+                    console.log("Clear Form button clicked");
+                    if (!form) {
+                        alert("Error: Form element not found."); return;
+                    }
+                    if (confirm('Are you sure you want to clear the form? This will reset all fields.')) {
+                        form.reset();
+                        if(fromGuardNameSelect) fromGuardNameSelect.style.display = 'none';
+                        if(otherFromInput) otherFromInput.style.display = 'none';
+                        if(otherToInput) otherToInput.style.display = 'none';
+                        
+                        if (toRecipientsCheckboxesContainer) {
+                            const allCheckboxesInToGroup = toRecipientsCheckboxesContainer.querySelectorAll('input[type="checkbox"]');
+                            allCheckboxesInToGroup.forEach(cb => {
+                                cb.disabled = false; 
+                            });
+                        }
+                        if(fromSourceSelect) fromSourceSelect.dispatchEvent(new Event('change'));
+                        if(otherToRecipientCheckbox) otherToRecipientCheckbox.dispatchEvent(new Event('change'));
+                        console.log("Form cleared.");
+                    }
+                });
+                console.log("Clear Form button listener attached.");
+            } else { console.error("clearFormButton not found! Cannot attach listener."); }
+            
+            loadNotesFromLocalStorage(); 
         });
     </script>
 </body>
